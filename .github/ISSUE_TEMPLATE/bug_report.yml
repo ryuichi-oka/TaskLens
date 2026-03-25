@@ -1,0 +1,82 @@
+name: バグ報告
+description: 不具合の報告に使います
+title: "[バグ] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        不具合報告ありがとうございます。再現と切り分けがしやすいように、分かる範囲で埋めてください。
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: 何が起きているかを一文で書いてください
+      placeholder: 例: タスク追加後に一覧へ戻るとアプリがクラッシュする
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現手順
+      description: 再現できるように手順を順番に書いてください
+      placeholder: |
+        1. アプリを起動する
+        2. 「+」ボタンを押す
+        3. 必須項目を空のまま保存する
+        4. クラッシュする
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待する結果
+      placeholder: 例: バリデーションエラーが表示され、保存されない
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 実際の結果
+      placeholder: 例: 画面が閉じた直後にクラッシュする
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 影響度
+      options:
+        - Blocker
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: 環境
+      description: OS / デバイス / Xcode など
+      placeholder: 例: iOS 18.2 / iPhone 15 Pro / Xcode 16.1
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: ログ・スクリーンショット
+      description: エラーログや画像があれば貼ってください
+      placeholder: クラッシュログ、コンソール出力、スクリーンショットなど
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 補足
+      description: 回避策、発生頻度、関連 Issue などがあれば記入してください

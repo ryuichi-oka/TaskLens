@@ -1,0 +1,81 @@
+name: 機能提案
+description: 新機能や改善案の提案に使います
+title: "[機能提案] "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提案ありがとうございます。目的と完了イメージが分かる形で書いてもらえると整理しやすいです。
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 解決したいこと
+      description: いま何に困っているか、何を改善したいかを書いてください
+      placeholder: 例: タスクが増えると優先順位を管理しにくい
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 提案内容
+      description: どんな機能や改善を考えているかを書いてください
+      placeholder: 例: 締切日と優先度で並び替えられるフィルタを追加したい
+    validations:
+      required: true
+
+  - type: textarea
+    id: value
+    attributes:
+      label: 期待する価値
+      description: この変更で何が良くなるかを書いてください
+      placeholder: 例: 今日やるべきタスクをすぐ判断できるようになる
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: ユースケース
+      description: 具体的な利用シーンを書いてください
+      placeholder: |
+        例:
+        - 朝の確認時に高優先度タスクだけ見たい
+        - 締切が近いタスクから順に処理したい
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 完了条件
+      description: この Issue を完了と見なせる条件があれば書いてください
+      placeholder: |
+        例:
+        - 優先度で絞り込みできる
+        - 締切順で並び替えできる
+        - 状態はアプリ再起動後も保持される
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 対象エリア
+      options:
+        - UI/UX
+        - iOS app
+        - Data model
+        - Architecture
+        - CI/CD
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 代替案・補足
+      description: 他の案、懸念点、参考情報があれば記入してください
