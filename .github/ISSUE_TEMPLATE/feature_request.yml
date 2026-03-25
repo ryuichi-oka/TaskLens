@@ -1,6 +1,6 @@
-name: Feature request
+name: 機能提案
 description: 新機能や改善案の提案に使います
-title: "[Feature] "
+title: "[機能提案] "
 labels:
   - enhancement
 body:

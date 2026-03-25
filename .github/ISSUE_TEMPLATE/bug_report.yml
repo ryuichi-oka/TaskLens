@@ -1,6 +1,6 @@
-name: Bug report
+name: バグ報告
 description: 不具合の報告に使います
-title: "[Bug] "
+title: "[バグ] "
 labels:
   - bug
 body:
