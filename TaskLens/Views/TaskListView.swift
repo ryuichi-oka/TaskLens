@@ -7,6 +7,7 @@ struct TaskListView: View {
     @State private var selectedCategory: TaskCategory?
     @State private var selectedTag: TaskTag?
     @State private var selectedItem: SelectedTask?
+    @State private var isCreatePresented = false
 
     var body: some View {
         ZStack {
@@ -42,6 +43,7 @@ struct TaskListView: View {
         }
         .overlay(alignment: .bottomTrailing) {
             Button {
+                isCreatePresented = true
             } label: {
                 Image(systemName: "plus")
                     .font(.title2.weight(.semibold))
@@ -57,6 +59,11 @@ struct TaskListView: View {
         }
         .sheet(item: $selectedItem) { selection in
             detailSheet(for: selection.id)
+        }
+        .sheet(isPresented: $isCreatePresented) {
+            TaskCreateSheet { newItem in
+                items.insert(newItem, at: 0)
+            }
         }
     }
 

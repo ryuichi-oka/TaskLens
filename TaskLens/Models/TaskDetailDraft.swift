@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 // タスク詳細モーダルの編集状態を保持するドラフト
 struct TaskDetailDraft {
@@ -13,6 +14,21 @@ struct TaskDetailDraft {
     var actualHoursText: String
     var category: TaskCategory
     var selectedTagIDs: Set<UUID>
+
+    // 新規作成用の初期値を作成する
+    init() {
+        title = ""
+        memo = ""
+        status = .todo
+        dueDate = Date()
+        priority = .medium
+        plannedStart = Date()
+        plannedEnd = Date()
+        plannedHoursText = ""
+        actualHoursText = ""
+        category = TaskCategory.sampleCategories.first ?? TaskCategory(title: "未分類", color: .gray)
+        selectedTagIDs = []
+    }
 
     // 既存タスクの値を編集用ドラフトにコピーする
     init(item: TaskListItem) {
