@@ -21,48 +21,19 @@ struct SettingsView: View {
                 }
             }
         }
+        .listStyle(.plain)
         .navigationTitle("設定")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isCategoryPresented) {
             NavigationStack {
-                CategoryPlaceholderView()
+                CategoryManagementView()
             }
         }
         .sheet(isPresented: $isTagPresented) {
             NavigationStack {
-                TagPlaceholderView()
+                TagManagementView()
             }
         }
-    }
-}
-
-// カテゴリ管理画面のプレースホルダー
-private struct CategoryPlaceholderView: View {
-    var body: some View {
-        VStack(spacing: 12) {
-            Text("カテゴリ管理")
-                .font(.headline)
-            Text("T-007で実装します")
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .navigationTitle("カテゴリ管理")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-// タグ管理画面のプレースホルダー
-private struct TagPlaceholderView: View {
-    var body: some View {
-        VStack(spacing: 12) {
-            Text("タグ管理")
-                .font(.headline)
-            Text("T-008で実装します")
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .navigationTitle("タグ管理")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

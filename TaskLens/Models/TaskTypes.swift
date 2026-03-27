@@ -52,22 +52,6 @@ enum TaskPriority: String, CaseIterable {
     }
 }
 
-// カテゴリの表示モデル
-struct TaskCategory: Identifiable, Equatable, Hashable {
-    let id = UUID()
-    let title: String
-    let color: Color
-
-    // 開発・プレビュー用のサンプルカテゴリ
-    static let sampleCategories: [TaskCategory] = [
-        TaskCategory(title: "開発", color: .blue),
-        TaskCategory(title: "企画", color: .green),
-        TaskCategory(title: "レビュー", color: .orange),
-        TaskCategory(title: "調査", color: .purple),
-        TaskCategory(title: "運用", color: .pink)
-    ]
-}
-
 // タグの表示モデル
 struct TaskTag: Identifiable, Equatable, Hashable {
     let id = UUID()

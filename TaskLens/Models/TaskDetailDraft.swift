@@ -26,7 +26,7 @@ struct TaskDetailDraft {
         plannedEnd = Date()
         plannedHoursText = ""
         actualHoursText = ""
-        category = TaskCategory.sampleCategories.first ?? TaskCategory(title: "未分類", color: .gray)
+        category = TaskCategory.sampleCategories.first ?? TaskCategory(id: UUID(), title: "未分類", color: .gray)
         selectedTagIDs = []
     }
 
