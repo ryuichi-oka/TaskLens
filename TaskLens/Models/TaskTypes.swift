@@ -54,13 +54,13 @@ enum TaskPriority: String, CaseIterable {
 
 // タグの表示モデル
 struct TaskTag: Identifiable, Equatable, Hashable {
-    let id = UUID()
+    let id: UUID
     let title: String
 
     // 開発・プレビュー用のサンプルタグ
     static let sampleTags: [TaskTag] = [
-        TaskTag(title: "重要"),
-        TaskTag(title: "共有"),
-        TaskTag(title: "短時間")
+        TaskTag(id: UUID(), title: "重要"),
+        TaskTag(id: UUID(), title: "共有"),
+        TaskTag(id: UUID(), title: "短時間")
     ]
 }
