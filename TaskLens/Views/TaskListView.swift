@@ -18,15 +18,15 @@ struct TaskListView: View {
                 VStack(alignment: .leading, spacing: Layout.sectionVertical) {
                     filterChips
 
-                    if items.isEmpty {
+                    if filteredItems.isEmpty {
                         EmptyStateView(
-                            title: "タスクがありません",
-                            message: "右下の + から作成しましょう"
+                            title: emptyStateTitle,
+                            message: emptyStateMessage
                         )
                         .frame(maxWidth: .infinity)
                     } else {
                         LazyVStack(spacing: Layout.sectionVertical) {
-                            ForEach(items) { item in
+                            ForEach(filteredItems) { item in
                                 Button {
                                     selectedItem = SelectedTask(id: item.id)
                                 } label: {
@@ -65,6 +65,26 @@ struct TaskListView: View {
                 items.insert(newItem, at: 0)
             }
         }
+    }
+
+    // 選択中の条件を適用した一覧表示用の配列
+    private var filteredItems: [TaskListItem] {
+        items.filter { item in
+            let matchesStatus = selectedStatus.map { item.status == $0 } ?? true
+            let matchesCategory = selectedCategory.map { item.category == $0 } ?? true
+            let matchesTag = selectedTag.map { item.tags.contains($0) } ?? true
+            return matchesStatus && matchesCategory && matchesTag
+        }
+    }
+
+    // 空状態タイトルを一覧全体の件数とフィルタ有無で切り替える
+    private var emptyStateTitle: String {
+        items.isEmpty ? "タスクがありません" : "条件に合うタスクがありません"
+    }
+
+    // 空状態メッセージを一覧全体の件数とフィルタ有無で切り替える
+    private var emptyStateMessage: String {
+        items.isEmpty ? "右下の + から作成しましょう" : "フィルタ条件を変更してみましょう"
     }
 
     // 状態/カテゴリ/タグのフィルタチップを並べる
