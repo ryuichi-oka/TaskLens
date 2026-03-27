@@ -44,7 +44,9 @@ struct ContentView: View {
             .tag(Tab.analytics)
         }
         .sheet(isPresented: $isSettingsPresented) {
-            SettingsPlaceholderView()
+            NavigationStack {
+                SettingsView()
+            }
         }
     }
 
