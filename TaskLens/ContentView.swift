@@ -34,7 +34,7 @@ struct ContentView: View {
             .tag(Tab.schedule)
 
             NavigationStack {
-                AnalyticsPlaceholderView()
+                AnalyticsView()
                     .navigationTitle("分析")
                     .toolbar { commonToolbar() }
             }
