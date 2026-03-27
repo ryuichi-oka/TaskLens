@@ -17,13 +17,15 @@ struct AnalyticsView: View {
             .padding(.horizontal, Layout.screenHorizontal)
             .padding(.vertical, Layout.sectionVertical)
         }
+        .background(Color.backgroundPrimary)
     }
 
     // 予実差分（棒グラフ）
     private var varianceSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("予実差分")
-                .font(.headline)
+                .font(.titleMedium)
+                .foregroundStyle(Color.textPrimary)
 
             if varianceItems.isEmpty {
                 EmptyStateView(title: "データがありません", message: "タスクに予定/実績を入力すると表示されます")
@@ -53,7 +55,8 @@ struct AnalyticsView: View {
     private var categorySection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("カテゴリ別時間")
-                .font(.headline)
+                .font(.titleMedium)
+                .foregroundStyle(Color.textPrimary)
 
             if categoryItems.isEmpty {
                 EmptyStateView(title: "データがありません", message: "タスクに予定/実績を入力すると表示されます")
@@ -80,7 +83,8 @@ struct AnalyticsView: View {
     private var weeklySection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("週次サマリ")
-                .font(.headline)
+                .font(.titleMedium)
+                .foregroundStyle(Color.textPrimary)
 
             if weeklyItems.isEmpty {
                 EmptyStateView(title: "データがありません", message: "タスクに予定/実績を入力すると表示されます")
@@ -90,13 +94,13 @@ struct AnalyticsView: View {
                         x: .value("週", item.weekStart),
                         y: .value("時間", item.hours)
                     )
-                    .foregroundStyle(Color.accentColor)
+                    .foregroundStyle(Color.accentPrimary)
 
                     PointMark(
                         x: .value("週", item.weekStart),
                         y: .value("時間", item.hours)
                     )
-                    .foregroundStyle(Color.accentColor)
+                    .foregroundStyle(Color.accentPrimary)
                 }
                 .frame(height: 180)
                 .chartXAxis {

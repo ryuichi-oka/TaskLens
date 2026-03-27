@@ -8,10 +8,10 @@ struct TaskCategory: Identifiable, Equatable, Hashable {
 
     // 開発・プレビュー用のサンプルカテゴリ
     static let sampleCategories: [TaskCategory] = [
-        TaskCategory(id: UUID(), title: "開発", color: .blue),
-        TaskCategory(id: UUID(), title: "企画", color: .green),
-        TaskCategory(id: UUID(), title: "レビュー", color: .orange),
-        TaskCategory(id: UUID(), title: "調査", color: .purple),
-        TaskCategory(id: UUID(), title: "運用", color: .pink)
+        TaskCategory(id: UUID(), title: "開発", color: .categoryBlue),
+        TaskCategory(id: UUID(), title: "企画", color: .categoryGreen),
+        TaskCategory(id: UUID(), title: "レビュー", color: .categoryOrange),
+        TaskCategory(id: UUID(), title: "調査", color: .categoryPurple),
+        TaskCategory(id: UUID(), title: "運用", color: .categoryPink)
     ]
 }

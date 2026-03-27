@@ -32,6 +32,7 @@ struct ScheduleItem: Identifiable {
     static let sampleItems: [ScheduleItem] = {
         let calendar = Calendar.current
         let baseDate = calendar.startOfDay(for: Date())
+        let categories = TaskCategory.sampleCategories
 
         func makeDate(hour: Int, minute: Int) -> Date {
             calendar.date(byAdding: .minute, value: hour * 60 + minute, to: baseDate) ?? baseDate
@@ -43,7 +44,7 @@ struct ScheduleItem: Identifiable {
                 title: "デザインレビュー",
                 startAt: makeDate(hour: 9, minute: 0),
                 endAt: makeDate(hour: 10, minute: 30),
-                category: TaskCategory.sampleCategories[2],
+                category: categories[2],
                 priority: .high
             ),
             ScheduleItem(
@@ -51,7 +52,7 @@ struct ScheduleItem: Identifiable {
                 title: "API 仕様確認",
                 startAt: makeDate(hour: 9, minute: 30),
                 endAt: makeDate(hour: 11, minute: 0),
-                category: TaskCategory.sampleCategories[0],
+                category: categories[0],
                 priority: .medium
             ),
             ScheduleItem(
@@ -59,7 +60,7 @@ struct ScheduleItem: Identifiable {
                 title: "週次レポート",
                 startAt: makeDate(hour: 13, minute: 0),
                 endAt: makeDate(hour: 14, minute: 0),
-                category: TaskCategory.sampleCategories[4],
+                category: categories[4],
                 priority: .low
             )
         ]

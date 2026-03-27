@@ -16,11 +16,12 @@ struct TagManagementView: View {
                 ForEach(tags) { tag in
                     HStack(spacing: 12) {
                         Circle()
-                            .fill(Color.gray.opacity(0.6))
+                            .fill(Color.borderPrimary)
                             .frame(width: 10, height: 10)
 
                         Text(tag.title)
-                            .font(.body)
+                            .font(.bodyRegular)
+                            .foregroundStyle(Color.textPrimary)
 
                         Spacer()
                     }
@@ -33,6 +34,8 @@ struct TagManagementView: View {
             }
         }
         .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color.backgroundPrimary)
         .navigationTitle("タグ管理")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

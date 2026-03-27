@@ -21,12 +21,13 @@ struct CategoryManagementView: View {
                             .frame(width: 10, height: 10)
 
                         Text(category.title)
-                            .font(.body)
+                            .font(.bodyRegular)
+                            .foregroundStyle(Color.textPrimary)
 
                         Spacer()
 
                         Image(systemName: "line.3.horizontal")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.textTertiary)
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -38,6 +39,8 @@ struct CategoryManagementView: View {
             }
         }
         .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color.backgroundPrimary)
         .navigationTitle("カテゴリ管理")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -61,7 +64,7 @@ struct CategoryManagementView: View {
     private func beginCreate() {
         editingCategory = nil
         draftName = ""
-        draftColor = Color.blue
+        draftColor = Color.categoryBlue
         isEditPresented = true
     }
 

@@ -24,11 +24,11 @@ enum TaskStatus: String, CaseIterable, Identifiable {
     var tint: Color {
         switch self {
         case .todo:
-            return Color.orange
+            return Color.accentWarning
         case .inProgress:
-            return Color.accentColor
+            return Color.accentPrimary
         case .done:
-            return Color.green
+            return Color.accentSuccess
         }
     }
 }

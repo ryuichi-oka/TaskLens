@@ -8,29 +8,33 @@ struct TaskCardView: View {
         VStack(alignment: .leading, spacing: Layout.rowSpacing) {
             HStack(alignment: .firstTextBaseline) {
                 Text(item.title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.bodyEmphasis)
+                    .foregroundStyle(Color.textPrimary)
 
                 Spacer(minLength: 8)
 
-                StatusBadge(title: item.status.title, tint: item.status.tint)
+                Text(item.status.title)
+                    .statusBadge(backgroundColor: item.status.tint.opacity(0.16), textColor: item.status.tint)
             }
 
             HStack(spacing: 8) {
                 Text("期限: \(item.dueDateText)")
                 Text("優先度: \(item.priorityText)")
             }
-            .font(.caption)
-            .foregroundStyle(item.isOverdue ? Color.red : Color.secondary)
+            .font(.captionRegular)
+            .foregroundStyle(item.isOverdue ? Color.accentDanger : Color.textSecondary)
 
             HStack(spacing: 8) {
                 Text("予定")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.textTertiary)
                 Text(item.plannedText)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.bodyEmphasis)
+                    .foregroundStyle(Color.textPrimary)
                 Text("/ 実績")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.textTertiary)
                 Text(item.actualText)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.bodyEmphasis)
+                    .foregroundStyle(Color.textPrimary)
 
                 Spacer()
 
@@ -38,11 +42,9 @@ struct TaskCardView: View {
                     .fill(item.category.color)
                     .frame(width: 8, height: 8)
             }
-            .font(.caption)
+            .font(.captionRegular)
         }
-        .padding(Layout.cardInner)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .roundedCard()
     }
 }
 

@@ -18,6 +18,7 @@ struct ScheduleView: View {
             }
         }
         .padding(.vertical, Layout.sectionVertical)
+        .background(Color.backgroundPrimary)
     }
 
     // 日付切替と「今日」ボタンを表示する
@@ -27,6 +28,7 @@ struct ScheduleView: View {
                 selectedDate = Date()
             }
             .buttonStyle(.bordered)
+            .tint(Color.accentPrimary)
 
             Spacer()
 
@@ -37,7 +39,8 @@ struct ScheduleView: View {
             }
 
             Text(dateText)
-                .font(.subheadline.weight(.semibold))
+                .font(.titleMedium)
+                .foregroundStyle(Color.textPrimary)
 
             Button {
                 shiftDate(by: 1)
@@ -95,7 +98,7 @@ private struct ScheduleTimeline: View {
             ForEach(0...96, id: \.self) { index in
                 let isHour = index % 4 == 0
                 Rectangle()
-                    .fill(Color.gray.opacity(isHour ? 0.35 : 0.15))
+                    .fill(Color.borderPrimary.opacity(isHour ? 0.7 : 0.4))
                     .frame(height: 1)
                     .offset(y: CGFloat(index) * (hourHeight / 4))
                     .padding(.leading, timeLabelWidth)
@@ -105,8 +108,8 @@ private struct ScheduleTimeline: View {
                 ForEach(0..<24, id: \.self) { hour in
                     HStack(alignment: .top, spacing: 0) {
                         Text(String(format: "%02d:00", hour))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(.captionRegular)
+                            .foregroundStyle(Color.textSecondary)
                             .frame(width: timeLabelWidth, alignment: .leading)
 
                         Spacer()
@@ -215,13 +218,13 @@ private struct ScheduleBlockView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(item.title)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(Color.primary)
+                .font(.captionEmphasis)
+                .foregroundStyle(Color.textPrimary)
                 .lineLimit(2)
 
             Text(item.timeRangeText)
-                .font(.caption2)
-                .foregroundStyle(Color.secondary)
+                .font(.captionRegular)
+                .foregroundStyle(Color.textSecondary)
         }
         .padding(8)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

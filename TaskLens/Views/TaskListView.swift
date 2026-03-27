@@ -11,7 +11,7 @@ struct TaskListView: View {
 
     var body: some View {
         ZStack {
-            Color(.systemGroupedBackground)
+            Color.backgroundPrimary
                 .ignoresSafeArea()
 
             ScrollView {
@@ -49,7 +49,7 @@ struct TaskListView: View {
                     .font(.title2.weight(.semibold))
                     .foregroundColor(.white)
                     .frame(width: Layout.fabSize, height: Layout.fabSize)
-                    .background(Color.accentColor)
+                    .background(Color.accentPrimary)
                     .clipShape(Circle())
                     .shadow(color: Color.black.opacity(0.12), radius: 12, x: 0, y: 6)
             }
@@ -91,8 +91,8 @@ struct TaskListView: View {
     private var filterChips: some View {
         VStack(alignment: .leading, spacing: Layout.rowSpacing) {
             Text("フィルタ")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .font(.captionEmphasis)
+                .foregroundStyle(Color.textSecondary)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
@@ -126,7 +126,7 @@ struct TaskListView: View {
                         FilterChip(
                             title: tag.title,
                             isSelected: selectedTag == tag,
-                            tint: Color.accentColor
+                            tint: Color.accentPrimary
                         ) {
                             selectedTag = selectedTag == tag ? nil : tag
                         }

@@ -10,15 +10,15 @@ struct FilterChip: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.caption.weight(.semibold))
+                .font(.captionEmphasis)
                 .padding(.vertical, Layout.chipVertical)
                 .padding(.horizontal, Layout.chipHorizontal)
-                .foregroundStyle(isSelected ? Color.white : Color.primary)
-                .background(isSelected ? tint : Color(.secondarySystemBackground))
+                .foregroundStyle(isSelected ? Color.accentPrimary : Color.textPrimary)
+                .background(isSelected ? Color.accentPrimary.opacity(0.14) : Color.surfacePrimary)
                 .clipShape(Capsule())
                 .overlay(
                     Capsule()
-                        .stroke(Color.gray.opacity(0.2), lineWidth: isSelected ? 0 : 1)
+                        .stroke(Color.borderPrimary, lineWidth: isSelected ? 0 : 1)
                 )
         }
         .buttonStyle(.plain)

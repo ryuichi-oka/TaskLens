@@ -48,48 +48,53 @@ struct TaskListItem: Identifiable {
     }
 
     // 開発・プレビュー用のサンプルデータ
-    static let sampleItems: [TaskListItem] = [
-        TaskListItem(
-            id: UUID(),
-            title: "新規リリース準備",
-            memo: "リリースノートの最終確認",
-            status: .inProgress,
-            dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date(),
-            priority: .high,
-            plannedStart: Calendar.current.date(byAdding: .hour, value: 10, to: Date()) ?? Date(),
-            plannedEnd: Calendar.current.date(byAdding: .hour, value: 12, to: Date()) ?? Date(),
-            plannedHours: 3.0,
-            actualHours: 2.4,
-            category: TaskCategory.sampleCategories[0],
-            tags: [TaskTag.sampleTags[0]]
-        ),
-        TaskListItem(
-            id: UUID(),
-            title: "UIレビューの整理",
-            memo: "指摘事項をまとめて共有",
-            status: .todo,
-            dueDate: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date(),
-            priority: .medium,
-            plannedStart: Calendar.current.date(byAdding: .hour, value: 14, to: Date()) ?? Date(),
-            plannedEnd: Calendar.current.date(byAdding: .hour, value: 15, to: Date()) ?? Date(),
-            plannedHours: 1.5,
-            actualHours: 0.5,
-            category: TaskCategory.sampleCategories[2],
-            tags: [TaskTag.sampleTags[1], TaskTag.sampleTags[2]]
-        ),
-        TaskListItem(
-            id: UUID(),
-            title: "週次レポートまとめ",
-            memo: "今週の進捗を整理する",
-            status: .done,
-            dueDate: Calendar.current.date(byAdding: .day, value: 3, to: Date()) ?? Date(),
-            priority: .low,
-            plannedStart: Calendar.current.date(byAdding: .hour, value: 9, to: Date()) ?? Date(),
-            plannedEnd: Calendar.current.date(byAdding: .hour, value: 11, to: Date()) ?? Date(),
-            plannedHours: 2.0,
-            actualHours: 2.1,
-            category: TaskCategory.sampleCategories[4],
-            tags: []
-        )
-    ]
+    static let sampleItems: [TaskListItem] = {
+        let categories = TaskCategory.sampleCategories
+        let tags = TaskTag.sampleTags
+
+        return [
+            TaskListItem(
+                id: UUID(),
+                title: "新規リリース準備",
+                memo: "リリースノートの最終確認",
+                status: .inProgress,
+                dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date(),
+                priority: .high,
+                plannedStart: Calendar.current.date(byAdding: .hour, value: 10, to: Date()) ?? Date(),
+                plannedEnd: Calendar.current.date(byAdding: .hour, value: 12, to: Date()) ?? Date(),
+                plannedHours: 3.0,
+                actualHours: 2.4,
+                category: categories[0],
+                tags: [tags[0]]
+            ),
+            TaskListItem(
+                id: UUID(),
+                title: "UIレビューの整理",
+                memo: "指摘事項をまとめて共有",
+                status: .todo,
+                dueDate: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date(),
+                priority: .medium,
+                plannedStart: Calendar.current.date(byAdding: .hour, value: 14, to: Date()) ?? Date(),
+                plannedEnd: Calendar.current.date(byAdding: .hour, value: 15, to: Date()) ?? Date(),
+                plannedHours: 1.5,
+                actualHours: 0.5,
+                category: categories[2],
+                tags: [tags[1], tags[2]]
+            ),
+            TaskListItem(
+                id: UUID(),
+                title: "週次レポートまとめ",
+                memo: "今週の進捗を整理する",
+                status: .done,
+                dueDate: Calendar.current.date(byAdding: .day, value: 3, to: Date()) ?? Date(),
+                priority: .low,
+                plannedStart: Calendar.current.date(byAdding: .hour, value: 9, to: Date()) ?? Date(),
+                plannedEnd: Calendar.current.date(byAdding: .hour, value: 11, to: Date()) ?? Date(),
+                plannedHours: 2.0,
+                actualHours: 2.1,
+                category: categories[4],
+                tags: []
+            )
+        ]
+    }()
 }

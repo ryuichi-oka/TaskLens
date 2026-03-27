@@ -8,15 +8,15 @@ struct EmptyStateView: View {
     var body: some View {
         VStack(spacing: 8) {
             Text(title)
-                .font(.headline)
+                .font(.titleMedium)
+                .foregroundStyle(Color.textPrimary)
             Text(message)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(.bodyRegular)
+                .foregroundStyle(Color.textSecondary)
         }
         .padding(Layout.sectionVertical)
         .frame(maxWidth: .infinity)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .roundedCard()
     }
 }
 
