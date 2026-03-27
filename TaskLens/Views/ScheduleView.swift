@@ -9,11 +9,11 @@ struct ScheduleView: View {
         VStack(spacing: Layout.sectionVertical) {
             dateHeader
 
-            if items.isEmpty {
+            if filteredItems.isEmpty {
                 EmptyStateView(title: "予定がありません", message: "+ から予定を追加")
                     .padding(.horizontal, Layout.screenHorizontal)
             } else {
-                ScheduleTimeline(items: items, selectedDate: selectedDate)
+                ScheduleTimeline(items: filteredItems, selectedDate: selectedDate)
                     .padding(.horizontal, Layout.screenHorizontal)
             }
         }
@@ -59,6 +59,14 @@ struct ScheduleView: View {
 
     private func shiftDate(by value: Int) {
         selectedDate = Calendar.current.date(byAdding: .day, value: value, to: selectedDate) ?? selectedDate
+    }
+
+    // 選択中の日付に一致する予定だけを表示対象にする
+    private var filteredItems: [ScheduleItem] {
+        let calendar = Calendar.current
+        return items.filter { item in
+            calendar.isDate(item.startAt, inSameDayAs: selectedDate)
+        }
     }
 }
 
