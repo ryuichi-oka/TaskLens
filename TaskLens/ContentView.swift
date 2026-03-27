@@ -24,7 +24,7 @@ struct ContentView: View {
             .tag(Tab.tasks)
 
             NavigationStack {
-                SchedulePlaceholderView()
+                ScheduleView()
                     .navigationTitle("スケジュール")
                     .toolbar { commonToolbar() }
             }
