@@ -1,13 +1,13 @@
 import Foundation
 
-// 画面内の共通レイアウト値
+// 画面内の共通レイアウト値（DesignSystemのSpacingを参照）
 enum Layout {
-    static let screenHorizontal: CGFloat = 16
-    static let sectionVertical: CGFloat = 16
-    static let rowSpacing: CGFloat = 6
-    static let chipVertical: CGFloat = 8
-    static let chipHorizontal: CGFloat = 12
-    static let cardInner: CGFloat = 12
-    static let fabMargin: CGFloat = 24
-    static let fabSize: CGFloat = 56
+    static let screenHorizontal: CGFloat = Spacing.screenHorizontal
+    static let sectionVertical: CGFloat = Spacing.sectionVertical
+    static let rowSpacing: CGFloat = Spacing.rowSpacing
+    static let chipVertical: CGFloat = Spacing.chipVertical
+    static let chipHorizontal: CGFloat = Spacing.chipHorizontal
+    static let cardInner: CGFloat = Spacing.cardInner
+    static let fabMargin: CGFloat = Spacing.fabMargin
+    static let fabSize: CGFloat = Spacing.fabSize
 }

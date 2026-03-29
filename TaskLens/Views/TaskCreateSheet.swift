@@ -17,13 +17,13 @@ struct TaskCreateSheet: View {
                             .disableAutocorrection(true)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                    .stroke(isTitleInvalid ? Color.red : Color.clear, lineWidth: 1)
+                                    .stroke(isTitleInvalid ? Color.accentDanger : Color.clear, lineWidth: 1)
                             )
 
                         if let titleValidationMessage {
                             Text(titleValidationMessage)
-                                .font(.caption)
-                                .foregroundStyle(.red)
+                                .font(.captionRegular)
+                                .foregroundStyle(Color.accentDanger)
                         }
                     }
 
@@ -75,6 +75,7 @@ struct TaskCreateSheet: View {
                     Button("キャンセル") {
                         dismiss()
                     }
+                    .foregroundStyle(Color.textSecondary)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("作成") {

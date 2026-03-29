@@ -29,13 +29,13 @@ struct TaskDetailSheet: View {
                             }
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                    .stroke(isTitleInvalid ? Color.red : Color.clear, lineWidth: 1)
+                                    .stroke(isTitleInvalid ? Color.accentDanger : Color.clear, lineWidth: 1)
                             )
 
                         if let validationMessage {
                             Text(validationMessage)
-                                .font(.caption)
-                                .foregroundStyle(.red)
+                                .font(.captionRegular)
+                                .foregroundStyle(Color.accentDanger)
                         }
                     }
 
@@ -96,6 +96,7 @@ struct TaskDetailSheet: View {
                     Button("キャンセル") {
                         dismiss()
                     }
+                    .foregroundStyle(Color.textSecondary)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("保存") {

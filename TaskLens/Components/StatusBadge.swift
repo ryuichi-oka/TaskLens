@@ -7,10 +7,10 @@ struct StatusBadge: View {
 
     var body: some View {
         Text(title)
-            .font(.caption2.weight(.semibold))
+            .font(.captionEmphasis)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
-            .background(tint.opacity(0.15))
+            .background(tint.opacity(0.16))
             .foregroundStyle(tint)
             .clipShape(Capsule())
     }

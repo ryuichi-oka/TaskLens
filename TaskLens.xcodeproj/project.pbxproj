@@ -8,12 +8,9 @@
 
 /* Begin PBXFileReference section */
 		E9618F132F704CF100ECB909 /* TaskLens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TaskLens.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E9C716412F73DDFC00D66906 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
-		E9C716422F73DDFD00D66906 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
-		E9C716432F73DDFD00D66906 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
-		E9C716442F73DDFD00D66906 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
-		E9C716452F73DDFD00D66906 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E9618F152F704CF100ECB909 /* TaskLens */ = {
@@ -54,11 +51,6 @@
 		E9C716402F73DDFC00D66906 /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
-				E9C716412F73DDFC00D66906 /* Colors.swift */,
-				E9C716422F73DDFD00D66906 /* Typography.swift */,
-				E9C716432F73DDFD00D66906 /* Spacing.swift */,
-				E9C716442F73DDFD00D66906 /* Components.swift */,
-				E9C716452F73DDFD00D66906 /* README.md */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";

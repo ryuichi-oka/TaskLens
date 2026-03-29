@@ -24,11 +24,11 @@ enum TaskStatus: String, CaseIterable, Identifiable {
     var tint: Color {
         switch self {
         case .todo:
-            return Color.orange
+            return Color.accentWarning
         case .inProgress:
-            return Color.accentColor
+            return Color.accentPrimary
         case .done:
-            return Color.green
+            return Color.accentSuccess
         }
     }
 }
@@ -52,31 +52,15 @@ enum TaskPriority: String, CaseIterable {
     }
 }
 
-// カテゴリの表示モデル
-struct TaskCategory: Identifiable, Equatable, Hashable {
-    let id = UUID()
-    let title: String
-    let color: Color
-
-    // 開発・プレビュー用のサンプルカテゴリ
-    static let sampleCategories: [TaskCategory] = [
-        TaskCategory(title: "開発", color: .blue),
-        TaskCategory(title: "企画", color: .green),
-        TaskCategory(title: "レビュー", color: .orange),
-        TaskCategory(title: "調査", color: .purple),
-        TaskCategory(title: "運用", color: .pink)
-    ]
-}
-
 // タグの表示モデル
 struct TaskTag: Identifiable, Equatable, Hashable {
-    let id = UUID()
+    let id: UUID
     let title: String
 
     // 開発・プレビュー用のサンプルタグ
     static let sampleTags: [TaskTag] = [
-        TaskTag(title: "重要"),
-        TaskTag(title: "共有"),
-        TaskTag(title: "短時間")
+        TaskTag(id: UUID(), title: "重要"),
+        TaskTag(id: UUID(), title: "共有"),
+        TaskTag(id: UUID(), title: "短時間")
     ]
 }

@@ -24,7 +24,7 @@ struct ContentView: View {
             .tag(Tab.tasks)
 
             NavigationStack {
-                SchedulePlaceholderView()
+                ScheduleView()
                     .navigationTitle("スケジュール")
                     .toolbar { commonToolbar() }
             }
@@ -34,7 +34,7 @@ struct ContentView: View {
             .tag(Tab.schedule)
 
             NavigationStack {
-                AnalyticsPlaceholderView()
+                AnalyticsView()
                     .navigationTitle("分析")
                     .toolbar { commonToolbar() }
             }
@@ -44,7 +44,9 @@ struct ContentView: View {
             .tag(Tab.analytics)
         }
         .sheet(isPresented: $isSettingsPresented) {
-            SettingsPlaceholderView()
+            NavigationStack {
+                SettingsView()
+            }
         }
     }
 
