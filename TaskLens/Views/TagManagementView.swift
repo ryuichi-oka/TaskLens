@@ -1,10 +1,13 @@
 import SwiftUI
+import SwiftData
 
 // タグ管理画面（追加/編集/削除）
 struct TagManagementView: View {
-    @State private var tags = TaskTag.sampleTags
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \TagModel.sortOrder) private var tags: [TagModel]
+
     @State private var isEditPresented = false
-    @State private var editingTag: TaskTag?
+    @State private var editingTag: TagModel?
     @State private var draftName = ""
 
     var body: some View {
@@ -60,7 +63,7 @@ struct TagManagementView: View {
     }
 
     // 既存タグの編集を開始する
-    private func beginEdit(_ tag: TaskTag) {
+    private func beginEdit(_ tag: TagModel) {
         editingTag = tag
         draftName = tag.title
         isEditPresented = true
@@ -71,11 +74,12 @@ struct TagManagementView: View {
         let trimmed = draftName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 
-        if let editingTag,
-           let index = tags.firstIndex(where: { $0.id == editingTag.id }) {
-            tags[index] = TaskTag(id: editingTag.id, title: trimmed)
+        if let editingTag {
+            editingTag.title = trimmed
         } else {
-            tags.append(TaskTag(id: UUID(), title: trimmed))
+            let nextOrder = (tags.map { $0.sortOrder }.max() ?? -1) + 1
+            let tag = TagModel(title: trimmed, sortOrder: nextOrder)
+            modelContext.insert(tag)
         }
 
         isEditPresented = false
@@ -83,7 +87,9 @@ struct TagManagementView: View {
 
     // タグを削除する
     private func delete(at offsets: IndexSet) {
-        tags.remove(atOffsets: offsets)
+        for index in offsets {
+            modelContext.delete(tags[index])
+        }
     }
 
     private var tagEditSheet: some View {

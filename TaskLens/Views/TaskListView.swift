@@ -1,12 +1,17 @@
 import SwiftUI
+import SwiftData
 
 // タスク一覧の表示と詳細モーダルの起点となる画面
 struct TaskListView: View {
-    @State private var items = TaskListItem.sampleItems
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \TaskModel.dueDate) private var tasks: [TaskModel]
+    @Query(sort: \CategoryModel.sortOrder) private var categories: [CategoryModel]
+    @Query(sort: \TagModel.sortOrder) private var tags: [TagModel]
+
     @State private var selectedStatus: TaskStatus?
-    @State private var selectedCategory: TaskCategory?
-    @State private var selectedTag: TaskTag?
-    @State private var selectedItem: SelectedTask?
+    @State private var selectedCategoryID: UUID?
+    @State private var selectedTagID: UUID?
+    @State private var selectedTask: TaskModel?
     @State private var isCreatePresented = false
 
     var body: some View {
@@ -18,7 +23,7 @@ struct TaskListView: View {
                 VStack(alignment: .leading, spacing: Layout.sectionVertical) {
                     filterChips
 
-                    if filteredItems.isEmpty {
+                    if filteredTasks.isEmpty {
                         EmptyStateView(
                             title: emptyStateTitle,
                             message: emptyStateMessage
@@ -26,11 +31,11 @@ struct TaskListView: View {
                         .frame(maxWidth: .infinity)
                     } else {
                         LazyVStack(spacing: Layout.sectionVertical) {
-                            ForEach(filteredItems) { item in
+                            ForEach(filteredTasks) { task in
                                 Button {
-                                    selectedItem = SelectedTask(id: item.id)
+                                    selectedTask = task
                                 } label: {
-                                    TaskCardView(item: item)
+                                    TaskCardView(task: task)
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -57,34 +62,56 @@ struct TaskListView: View {
             .padding(.bottom, Layout.fabMargin)
             .accessibilityLabel("タスクを追加")
         }
-        .sheet(item: $selectedItem) { selection in
-            detailSheet(for: selection.id)
+        .sheet(item: $selectedTask) { task in
+            TaskDetailSheet(task: task) {
+                delete(task)
+            }
         }
         .sheet(isPresented: $isCreatePresented) {
-            TaskCreateSheet { newItem in
-                items.insert(newItem, at: 0)
+            TaskCreateSheet()
+        }
+        .onChange(of: categoryIDs) { newValue in
+            guard let selectedCategoryID else { return }
+            if !newValue.contains(selectedCategoryID) {
+                self.selectedCategoryID = nil
+            }
+        }
+        .onChange(of: tagIDs) { newValue in
+            guard let selectedTagID else { return }
+            if !newValue.contains(selectedTagID) {
+                self.selectedTagID = nil
             }
         }
     }
 
     // 選択中の条件を適用した一覧表示用の配列
-    private var filteredItems: [TaskListItem] {
-        items.filter { item in
-            let matchesStatus = selectedStatus.map { item.status == $0 } ?? true
-            let matchesCategory = selectedCategory.map { item.category == $0 } ?? true
-            let matchesTag = selectedTag.map { item.tags.contains($0) } ?? true
+    private var filteredTasks: [TaskModel] {
+        tasks.filter { task in
+            let matchesStatus = selectedStatus.map { task.status == $0 } ?? true
+            let matchesCategory = selectedCategoryID.map { task.category?.id == $0 } ?? true
+            let matchesTag = selectedTagID.map { tagID in
+                task.tags.contains { $0.id == tagID }
+            } ?? true
             return matchesStatus && matchesCategory && matchesTag
         }
     }
 
     // 空状態タイトルを一覧全体の件数とフィルタ有無で切り替える
     private var emptyStateTitle: String {
-        items.isEmpty ? "タスクがありません" : "条件に合うタスクがありません"
+        tasks.isEmpty ? "タスクがありません" : "条件に合うタスクがありません"
     }
 
     // 空状態メッセージを一覧全体の件数とフィルタ有無で切り替える
     private var emptyStateMessage: String {
-        items.isEmpty ? "右下の + から作成しましょう" : "フィルタ条件を変更してみましょう"
+        tasks.isEmpty ? "右下の + から作成しましょう" : "フィルタ条件を変更してみましょう"
+    }
+
+    private var categoryIDs: [UUID] {
+        categories.map(\.id)
+    }
+
+    private var tagIDs: [UUID] {
+        tags.map(\.id)
     }
 
     // 状態/カテゴリ/タグのフィルタチップを並べる
@@ -109,26 +136,26 @@ struct TaskListView: View {
                     Divider()
                         .frame(height: 24)
 
-                    ForEach(TaskCategory.sampleCategories) { category in
+                    ForEach(categories) { category in
                         FilterChip(
                             title: category.title,
-                            isSelected: selectedCategory == category,
+                            isSelected: selectedCategoryID == category.id,
                             tint: category.color
                         ) {
-                            selectedCategory = selectedCategory == category ? nil : category
+                            selectedCategoryID = selectedCategoryID == category.id ? nil : category.id
                         }
                     }
 
                     Divider()
                         .frame(height: 24)
 
-                    ForEach(TaskTag.sampleTags) { tag in
+                    ForEach(tags) { tag in
                         FilterChip(
                             title: tag.title,
-                            isSelected: selectedTag == tag,
+                            isSelected: selectedTagID == tag.id,
                             tint: Color.accentPrimary
                         ) {
-                            selectedTag = selectedTag == tag ? nil : tag
+                            selectedTagID = selectedTagID == tag.id ? nil : tag.id
                         }
                     }
                 }
@@ -137,31 +164,13 @@ struct TaskListView: View {
         }
     }
 
-    // 選択されたIDに対応する詳細モーダルを返す
-    private func detailSheet(for id: UUID) -> some View {
-        Group {
-            if let index = items.firstIndex(where: { $0.id == id }) {
-                TaskDetailSheet(item: $items[index]) {
-                    deleteItem(at: index)
-                }
-            } else {
-                ProgressView()
-            }
-        }
-    }
-
     // 一覧から削除し、モーダルを閉じる
-    private func deleteItem(at index: Int) {
-        items.remove(at: index)
-        selectedItem = nil
+    private func delete(_ task: TaskModel) {
+        modelContext.delete(task)
     }
-}
-
-// sheet(item:) 用にIDを保持する軽量モデル
-private struct SelectedTask: Identifiable {
-    let id: UUID
 }
 
 #Preview {
     TaskListView()
+        .modelContainer(for: [TaskModel.self, CategoryModel.self, TagModel.self], inMemory: true)
 }

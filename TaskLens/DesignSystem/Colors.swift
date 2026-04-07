@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 extension Color {
     static let backgroundPrimary = Color(hex: "#FFFFFF")
@@ -59,5 +60,16 @@ extension Color {
         }
 
         self.init(.sRGB, red: red, green: green, blue: blue, opacity: alpha)
+    }
+
+    // 現在の色をHEX文字列で返す（不明時は黒）
+    func toHexString() -> String {
+        let uiColor = UIColor(self)
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        return String(format: "#%02X%02X%02X", Int(red * 255), Int(green * 255), Int(blue * 255))
     }
 }

@@ -1,19 +1,20 @@
 import SwiftUI
+import SwiftData
 
 // スケジュール画面（時間軸 + 予定枠表示）
 struct ScheduleView: View {
     @State private var selectedDate = Date()
-    private let items = ScheduleItem.sampleItems
+    @Query(sort: \TaskModel.plannedStart) private var tasks: [TaskModel]
 
     var body: some View {
         VStack(spacing: Layout.sectionVertical) {
             dateHeader
 
-            if filteredItems.isEmpty {
+            if filteredTasks.isEmpty {
                 EmptyStateView(title: "予定がありません", message: "+ から予定を追加")
                     .padding(.horizontal, Layout.screenHorizontal)
             } else {
-                ScheduleTimeline(items: filteredItems, selectedDate: selectedDate)
+                ScheduleTimeline(items: filteredTasks, selectedDate: selectedDate)
                     .padding(.horizontal, Layout.screenHorizontal)
             }
         }
@@ -62,10 +63,10 @@ struct ScheduleView: View {
     }
 
     // 選択中の日付に一致する予定だけを表示対象にする
-    private var filteredItems: [ScheduleItem] {
+    private var filteredTasks: [TaskModel] {
         let calendar = Calendar.current
-        return items.filter { item in
-            calendar.isDate(item.startAt, inSameDayAs: selectedDate)
+        return tasks.filter { task in
+            calendar.isDate(task.plannedStart, inSameDayAs: selectedDate)
         }
     }
 }
@@ -75,7 +76,7 @@ private struct ScheduleTimeline: View {
     private let timeLabelWidth: CGFloat = 56
     private let lineLeadingPadding: CGFloat = 8
 
-    let items: [ScheduleItem]
+    let items: [TaskModel]
     let selectedDate: Date
 
     var body: some View {
@@ -89,7 +90,7 @@ private struct ScheduleTimeline: View {
                     timeGrid(totalHeight: totalHeight)
 
                     ForEach(layouts) { layout in
-                        ScheduleBlockView(item: layout.item)
+                        ScheduleBlockView(task: layout.task)
                             .frame(width: layout.width, height: layout.height)
                             .offset(x: timeLabelWidth + lineLeadingPadding + layout.xOffset, y: layout.yOffset)
                     }
@@ -129,16 +130,16 @@ private struct ScheduleTimeline: View {
         .frame(height: totalHeight)
     }
 
-    private func buildLayouts(items: [ScheduleItem], availableWidth: CGFloat) -> [ScheduleItemLayout] {
+    private func buildLayouts(items: [TaskModel], availableWidth: CGFloat) -> [ScheduleTaskLayout] {
         let sorted = items.sorted { lhs, rhs in
-            if lhs.startAt == rhs.startAt {
-                return lhs.priorityRank < rhs.priorityRank
+            if lhs.plannedStart == rhs.plannedStart {
+                return lhs.schedulePriorityRank < rhs.schedulePriorityRank
             }
-            return lhs.startAt < rhs.startAt
+            return lhs.plannedStart < rhs.plannedStart
         }
 
-        var layouts: [ScheduleItemLayout] = []
-        var cluster: [ScheduleItem] = []
+        var layouts: [ScheduleTaskLayout] = []
+        var cluster: [TaskModel] = []
         var clusterEnd = Date.distantPast
 
         func flushCluster() {
@@ -148,22 +149,22 @@ private struct ScheduleTimeline: View {
             clusterEnd = Date.distantPast
         }
 
-        for item in sorted {
+        for task in sorted {
             if cluster.isEmpty {
-                cluster = [item]
-                clusterEnd = item.endAt
+                cluster = [task]
+                clusterEnd = task.plannedEnd
                 continue
             }
 
-            if item.startAt < clusterEnd {
-                cluster.append(item)
-                if item.endAt > clusterEnd {
-                    clusterEnd = item.endAt
+            if task.plannedStart < clusterEnd {
+                cluster.append(task)
+                if task.plannedEnd > clusterEnd {
+                    clusterEnd = task.plannedEnd
                 }
             } else {
                 flushCluster()
-                cluster = [item]
-                clusterEnd = item.endAt
+                cluster = [task]
+                clusterEnd = task.plannedEnd
             }
         }
 
@@ -171,24 +172,24 @@ private struct ScheduleTimeline: View {
         return layouts
     }
 
-    private func layoutCluster(_ items: [ScheduleItem], availableWidth: CGFloat) -> [ScheduleItemLayout] {
+    private func layoutCluster(_ items: [TaskModel], availableWidth: CGFloat) -> [ScheduleTaskLayout] {
         let sorted = items.sorted { lhs, rhs in
-            if lhs.startAt == rhs.startAt {
-                return lhs.priorityRank < rhs.priorityRank
+            if lhs.plannedStart == rhs.plannedStart {
+                return lhs.schedulePriorityRank < rhs.schedulePriorityRank
             }
-            return lhs.startAt < rhs.startAt
+            return lhs.plannedStart < rhs.plannedStart
         }
 
         var columnEndTimes: [Date] = []
         var columnIndices: [UUID: Int] = [:]
 
-        for item in sorted {
-            if let index = columnEndTimes.firstIndex(where: { $0 <= item.startAt }) {
-                columnEndTimes[index] = item.endAt
-                columnIndices[item.id] = index
+        for task in sorted {
+            if let index = columnEndTimes.firstIndex(where: { $0 <= task.plannedStart }) {
+                columnEndTimes[index] = task.plannedEnd
+                columnIndices[task.id] = index
             } else {
-                columnEndTimes.append(item.endAt)
-                columnIndices[item.id] = columnEndTimes.count - 1
+                columnEndTimes.append(task.plannedEnd)
+                columnIndices[task.id] = columnEndTimes.count - 1
             }
         }
 
@@ -197,13 +198,13 @@ private struct ScheduleTimeline: View {
         let totalSpacing = columnSpacing * CGFloat(max(columnCount - 1, 0))
         let width = max((availableWidth - totalSpacing) / CGFloat(columnCount), 80)
 
-        return items.compactMap { item in
-            guard let columnIndex = columnIndices[item.id] else { return nil }
-            let yOffset = minuteOffset(for: item.startAt) * (hourHeight / 60)
-            let height = max(minuteOffset(for: item.endAt) - minuteOffset(for: item.startAt), 30) * (hourHeight / 60)
+        return items.compactMap { task in
+            guard let columnIndex = columnIndices[task.id] else { return nil }
+            let yOffset = minuteOffset(for: task.plannedStart) * (hourHeight / 60)
+            let height = max(minuteOffset(for: task.plannedEnd) - minuteOffset(for: task.plannedStart), 30) * (hourHeight / 60)
             let xOffset = CGFloat(columnIndex) * (width + columnSpacing)
-            return ScheduleItemLayout(
-                item: item,
+            return ScheduleTaskLayout(
+                task: task,
                 width: width,
                 height: height,
                 xOffset: xOffset,
@@ -221,25 +222,25 @@ private struct ScheduleTimeline: View {
 }
 
 private struct ScheduleBlockView: View {
-    let item: ScheduleItem
+    let task: TaskModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(item.title)
+            Text(task.title)
                 .font(.captionEmphasis)
                 .foregroundStyle(Color.textPrimary)
                 .lineLimit(2)
 
-            Text(item.timeRangeText)
+            Text(task.timeRangeText)
                 .font(.captionRegular)
                 .foregroundStyle(Color.textSecondary)
         }
         .padding(8)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(item.category.color.opacity(0.18))
+        .background(task.scheduleCategoryColor.opacity(0.18))
         .overlay(
             Rectangle()
-                .fill(item.category.color)
+                .fill(task.scheduleCategoryColor)
                 .frame(width: 3),
             alignment: .leading
         )
@@ -247,9 +248,9 @@ private struct ScheduleBlockView: View {
     }
 }
 
-private struct ScheduleItemLayout: Identifiable {
+private struct ScheduleTaskLayout: Identifiable {
     let id = UUID()
-    let item: ScheduleItem
+    let task: TaskModel
     let width: CGFloat
     let height: CGFloat
     let xOffset: CGFloat
@@ -258,4 +259,31 @@ private struct ScheduleItemLayout: Identifiable {
 
 #Preview {
     ScheduleView()
+        .modelContainer(for: [TaskModel.self, CategoryModel.self, TagModel.self], inMemory: true)
+}
+
+private extension TaskModel {
+    // スケジュール表示用の優先度ソート値
+    var schedulePriorityRank: Int {
+        switch priority {
+        case .high:
+            return 0
+        case .medium:
+            return 1
+        case .low:
+            return 2
+        }
+    }
+
+    // スケジュール表示用のカテゴリ色
+    var scheduleCategoryColor: Color {
+        category?.color ?? Color.accentPrimary
+    }
+
+    // 表示用の時間レンジ
+    var timeRangeText: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return "\(formatter.string(from: plannedStart)) - \(formatter.string(from: plannedEnd))"
+    }
 }

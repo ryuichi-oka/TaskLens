@@ -1,54 +1,72 @@
 import SwiftUI
+import SwiftData
 
 // タスク一覧で使用するカードコンポーネント
 struct TaskCardView: View {
-    let item: TaskListItem
+    let task: TaskModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.rowSpacing) {
             HStack(alignment: .firstTextBaseline) {
-                Text(item.title)
+                Text(task.title)
                     .font(.bodyEmphasis)
                     .foregroundStyle(Color.textPrimary)
 
                 Spacer(minLength: 8)
 
-                Text(item.status.title)
-                    .statusBadge(backgroundColor: item.status.tint.opacity(0.16), textColor: item.status.tint)
+                Text(task.status.title)
+                    .statusBadge(backgroundColor: task.status.tint.opacity(0.16), textColor: task.status.tint)
             }
 
             HStack(spacing: 8) {
-                Text("期限: \(item.dueDateText)")
-                Text("優先度: \(item.priorityText)")
+                Text("期限: \(dueDateText)")
+                Text("優先度: \(task.priority.title)")
             }
             .font(.captionRegular)
-            .foregroundStyle(item.isOverdue ? Color.accentDanger : Color.textSecondary)
+            .foregroundStyle(isOverdue ? Color.accentDanger : Color.textSecondary)
 
             HStack(spacing: 8) {
                 Text("予定")
                     .foregroundStyle(Color.textTertiary)
-                Text(item.plannedText)
+                Text(plannedText)
                     .font(.bodyEmphasis)
                     .foregroundStyle(Color.textPrimary)
                 Text("/ 実績")
                     .foregroundStyle(Color.textTertiary)
-                Text(item.actualText)
+                Text(actualText)
                     .font(.bodyEmphasis)
                     .foregroundStyle(Color.textPrimary)
 
                 Spacer()
 
                 Circle()
-                    .fill(item.category.color)
+                    .fill(task.category?.color ?? Color.borderPrimary)
                     .frame(width: 8, height: 8)
             }
             .font(.captionRegular)
         }
         .roundedCard()
     }
+
+    private var dueDateText: String {
+        DateFormatter.shortDate.string(from: task.dueDate)
+    }
+
+    private var plannedText: String {
+        String(format: "%.1fh", task.plannedHours)
+    }
+
+    private var actualText: String {
+        String(format: "%.1fh", task.actualHours)
+    }
+
+    private var isOverdue: Bool {
+        task.dueDate < Calendar.current.startOfDay(for: Date())
+    }
 }
 
 #Preview {
-    TaskCardView(item: TaskListItem.sampleItems[0])
+    TaskCardView(task: TaskModel(title: "サンプル"))
         .padding()
+        .modelContainer(for: [TaskModel.self, CategoryModel.self, TagModel.self], inMemory: true)
 }

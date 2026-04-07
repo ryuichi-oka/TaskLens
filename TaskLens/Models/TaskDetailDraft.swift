@@ -12,11 +12,11 @@ struct TaskDetailDraft {
     var plannedEnd: Date
     var plannedHoursText: String
     var actualHoursText: String
-    var category: TaskCategory
+    var category: CategoryModel?
     var selectedTagIDs: Set<UUID>
 
     // 新規作成用の初期値を作成する
-    init() {
+    init(defaultCategory: CategoryModel? = nil) {
         title = ""
         memo = ""
         status = .todo
@@ -26,23 +26,23 @@ struct TaskDetailDraft {
         plannedEnd = Date()
         plannedHoursText = ""
         actualHoursText = ""
-        category = TaskCategory.sampleCategories.first ?? TaskCategory(id: UUID(), title: "未分類", color: .gray)
+        category = defaultCategory
         selectedTagIDs = []
     }
 
     // 既存タスクの値を編集用ドラフトにコピーする
-    init(item: TaskListItem) {
-        title = item.title
-        memo = item.memo
-        status = item.status
-        dueDate = item.dueDate
-        priority = item.priority
-        plannedStart = item.plannedStart
-        plannedEnd = item.plannedEnd
-        plannedHoursText = String(format: "%.1f", item.plannedHours)
-        actualHoursText = String(format: "%.1f", item.actualHours)
-        category = item.category
-        selectedTagIDs = Set(item.tags.map { $0.id })
+    init(task: TaskModel) {
+        title = task.title
+        memo = task.memo
+        status = task.status
+        dueDate = task.dueDate
+        priority = task.priority
+        plannedStart = task.plannedStart
+        plannedEnd = task.plannedEnd
+        plannedHoursText = String(format: "%.1f", task.plannedHours)
+        actualHoursText = String(format: "%.1f", task.actualHours)
+        category = task.category
+        selectedTagIDs = Set(task.tags.map { $0.id })
     }
 
     // 予定時間の数値変換（不正入力は0）

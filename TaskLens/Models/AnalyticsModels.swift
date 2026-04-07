@@ -38,9 +38,9 @@ enum AnalyticsVarianceKind: String {
     var color: Color {
         switch self {
         case .planned:
-            return Color.accentColor.opacity(0.55)
+            return Color.accentPrimary.opacity(0.55)
         case .actual:
-            return Color.accentColor
+            return Color.accentPrimary
         }
     }
 }
@@ -48,15 +48,18 @@ enum AnalyticsVarianceKind: String {
 // カテゴリ別時間の棒グラフに使うデータ
 struct AnalyticsCategoryItem: Identifiable {
     let id = UUID()
-    let category: TaskCategory
+    let category: CategoryModel
     let hours: Double
 
-    static let sampleItems: [AnalyticsCategoryItem] = [
-        AnalyticsCategoryItem(category: TaskCategory.sampleCategories[0], hours: 6.0),
-        AnalyticsCategoryItem(category: TaskCategory.sampleCategories[1], hours: 4.5),
-        AnalyticsCategoryItem(category: TaskCategory.sampleCategories[2], hours: 3.0),
-        AnalyticsCategoryItem(category: TaskCategory.sampleCategories[3], hours: 2.0)
-    ]
+    static let sampleItems: [AnalyticsCategoryItem] = {
+        let categories = CategoryModel.sampleSeed
+        return [
+            AnalyticsCategoryItem(category: categories[0], hours: 6.0),
+            AnalyticsCategoryItem(category: categories[1], hours: 4.5),
+            AnalyticsCategoryItem(category: categories[2], hours: 3.0),
+            AnalyticsCategoryItem(category: categories[3], hours: 2.0)
+        ]
+    }()
 }
 
 // 週次サマリの折れ線に使うデータ
