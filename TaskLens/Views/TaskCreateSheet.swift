@@ -1,10 +1,13 @@
 import SwiftUI
+import SwiftData
 
 // 新規タスク作成を行うモーダル
 struct TaskCreateSheet: View {
-    let onCreate: (TaskListItem) -> Void
-
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \CategoryModel.sortOrder) private var categories: [CategoryModel]
+    @Query(sort: \TagModel.sortOrder) private var tags: [TagModel]
+
     @State private var draft = TaskDetailDraft()
 
     var body: some View {
@@ -58,12 +61,13 @@ struct TaskCreateSheet: View {
 
                 Section("カテゴリ / タグ") {
                     Picker("カテゴリ", selection: $draft.category) {
-                        ForEach(TaskCategory.sampleCategories) { category in
-                            Text(category.title).tag(category)
+                        Text("未選択").tag(CategoryModel?.none)
+                        ForEach(categories) { category in
+                            Text(category.title).tag(Optional(category))
                         }
                     }
 
-                    ForEach(TaskTag.sampleTags) { tag in
+                    ForEach(tags) { tag in
                         Toggle(tag.title, isOn: bindingForTag(tag))
                     }
                 }
@@ -82,6 +86,11 @@ struct TaskCreateSheet: View {
                         create()
                     }
                     .disabled(!canSubmit)
+                }
+            }
+            .onAppear {
+                if draft.category == nil {
+                    draft.category = categories.first
                 }
             }
         }
@@ -109,30 +118,31 @@ struct TaskCreateSheet: View {
         titleValidationMessage == nil
     }
 
-    // 入力内容から新規タスクを生成して一覧へ追加する
+    // 入力内容から新規タスクを生成して保存する
     private func create() {
         guard canSubmit else { return }
         let trimmedTitle = draft.title.trimmingCharacters(in: .whitespacesAndNewlines)
-        let item = TaskListItem(
-            id: UUID(),
+        let selectedTags = tags.filter { draft.selectedTagIDs.contains($0.id) }
+
+        let task = TaskModel(
             title: trimmedTitle,
             memo: draft.memo,
             status: draft.status,
-            dueDate: draft.dueDate,
             priority: draft.priority,
+            dueDate: draft.dueDate,
             plannedStart: draft.plannedStart,
             plannedEnd: draft.plannedEnd,
             plannedHours: draft.plannedHours,
             actualHours: draft.actualHours,
             category: draft.category,
-            tags: TaskTag.sampleTags.filter { draft.selectedTagIDs.contains($0.id) }
+            tags: selectedTags
         )
-        onCreate(item)
+        modelContext.insert(task)
         dismiss()
     }
 
     // タグの選択状態をToggleにバインドする
-    private func bindingForTag(_ tag: TaskTag) -> Binding<Bool> {
+    private func bindingForTag(_ tag: TagModel) -> Binding<Bool> {
         Binding(
             get: { draft.selectedTagIDs.contains(tag.id) },
             set: { isOn in
@@ -147,5 +157,6 @@ struct TaskCreateSheet: View {
 }
 
 #Preview {
-    TaskCreateSheet(onCreate: { _ in })
+    TaskCreateSheet()
+        .modelContainer(for: [TaskModel.self, CategoryModel.self, TagModel.self], inMemory: true)
 }

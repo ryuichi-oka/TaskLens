@@ -10,8 +10,6 @@
 		E9618F132F704CF100ECB909 /* TaskLens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TaskLens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E9618F152F704CF100ECB909 /* TaskLens */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;

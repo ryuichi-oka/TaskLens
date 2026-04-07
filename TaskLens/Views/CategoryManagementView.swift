@@ -1,12 +1,15 @@
 import SwiftUI
+import SwiftData
 
 // カテゴリ管理画面（追加/編集/削除/並び替え）
 struct CategoryManagementView: View {
-    @State private var categories = TaskCategory.sampleCategories
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \CategoryModel.sortOrder) private var categories: [CategoryModel]
+
     @State private var isEditPresented = false
-    @State private var editingCategory: TaskCategory?
+    @State private var editingCategory: CategoryModel?
     @State private var draftName = ""
-    @State private var draftColor = Color.blue
+    @State private var draftColor = Color.categoryBlue
 
     var body: some View {
         List {
@@ -69,7 +72,7 @@ struct CategoryManagementView: View {
     }
 
     // 既存カテゴリの編集を開始する
-    private func beginEdit(_ category: TaskCategory) {
+    private func beginEdit(_ category: CategoryModel) {
         editingCategory = category
         draftName = category.title
         draftColor = category.color
@@ -81,11 +84,13 @@ struct CategoryManagementView: View {
         let trimmed = draftName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 
-        if let editingCategory,
-           let index = categories.firstIndex(where: { $0.id == editingCategory.id }) {
-            categories[index] = TaskCategory(id: editingCategory.id, title: trimmed, color: draftColor)
+        if let editingCategory {
+            editingCategory.title = trimmed
+            editingCategory.colorHex = draftColor.toHexString()
         } else {
-            categories.append(TaskCategory(id: UUID(), title: trimmed, color: draftColor))
+            let nextOrder = (categories.map { $0.sortOrder }.max() ?? -1) + 1
+            let category = CategoryModel(title: trimmed, colorHex: draftColor.toHexString(), sortOrder: nextOrder)
+            modelContext.insert(category)
         }
 
         isEditPresented = false
@@ -93,12 +98,18 @@ struct CategoryManagementView: View {
 
     // カテゴリを削除する
     private func delete(at offsets: IndexSet) {
-        categories.remove(atOffsets: offsets)
+        for index in offsets {
+            modelContext.delete(categories[index])
+        }
     }
 
     // カテゴリの並び順を更新する
     private func move(from source: IndexSet, to destination: Int) {
-        categories.move(fromOffsets: source, toOffset: destination)
+        var updated = categories
+        updated.move(fromOffsets: source, toOffset: destination)
+        for (index, category) in updated.enumerated() {
+            category.sortOrder = index
+        }
     }
 
     private var categoryEditSheet: some View {

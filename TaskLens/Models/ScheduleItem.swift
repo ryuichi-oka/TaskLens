@@ -6,7 +6,7 @@ struct ScheduleItem: Identifiable {
     let title: String
     let startAt: Date
     let endAt: Date
-    let category: TaskCategory
+    let category: CategoryModel
     let priority: TaskPriority
 
     // 優先度順のソート用値（小さいほど高優先）
@@ -32,7 +32,7 @@ struct ScheduleItem: Identifiable {
     static let sampleItems: [ScheduleItem] = {
         let calendar = Calendar.current
         let baseDate = calendar.startOfDay(for: Date())
-        let categories = TaskCategory.sampleCategories
+        let categories = CategoryModel.sampleSeed
 
         func makeDate(hour: Int, minute: Int) -> Date {
             calendar.date(byAdding: .minute, value: hour * 60 + minute, to: baseDate) ?? baseDate

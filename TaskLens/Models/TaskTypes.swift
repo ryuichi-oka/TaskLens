@@ -1,7 +1,7 @@
 import SwiftUI
 
 // タスクの進行状態
-enum TaskStatus: String, CaseIterable, Identifiable {
+enum TaskStatus: String, CaseIterable, Identifiable, Codable {
     case todo
     case inProgress
     case done
@@ -34,7 +34,7 @@ enum TaskStatus: String, CaseIterable, Identifiable {
 }
 
 // タスクの優先度
-enum TaskPriority: String, CaseIterable {
+enum TaskPriority: String, CaseIterable, Codable {
     case high
     case medium
     case low
@@ -52,15 +52,3 @@ enum TaskPriority: String, CaseIterable {
     }
 }
 
-// タグの表示モデル
-struct TaskTag: Identifiable, Equatable, Hashable {
-    let id: UUID
-    let title: String
-
-    // 開発・プレビュー用のサンプルタグ
-    static let sampleTags: [TaskTag] = [
-        TaskTag(id: UUID(), title: "重要"),
-        TaskTag(id: UUID(), title: "共有"),
-        TaskTag(id: UUID(), title: "短時間")
-    ]
-}

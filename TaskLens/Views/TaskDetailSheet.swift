@@ -1,19 +1,22 @@
 import SwiftUI
+import SwiftData
 
 // 既存タスクの閲覧・編集を行う詳細モーダル
 struct TaskDetailSheet: View {
-    @Binding var item: TaskListItem
+    @Bindable var task: TaskModel
     let onDelete: () -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Query(sort: \CategoryModel.sortOrder) private var categories: [CategoryModel]
+    @Query(sort: \TagModel.sortOrder) private var tags: [TagModel]
     @State private var draft: TaskDetailDraft
     @State private var validationMessage: String?
 
     // 外部から渡されたタスクを編集用ドラフトに変換する
-    init(item: Binding<TaskListItem>, onDelete: @escaping () -> Void) {
-        _item = item
+    init(task: TaskModel, onDelete: @escaping () -> Void) {
+        self.task = task
         self.onDelete = onDelete
-        _draft = State(initialValue: TaskDetailDraft(item: item.wrappedValue))
+        _draft = State(initialValue: TaskDetailDraft(task: task))
     }
 
     var body: some View {
@@ -70,12 +73,13 @@ struct TaskDetailSheet: View {
 
                 Section("カテゴリ / タグ") {
                     Picker("カテゴリ", selection: $draft.category) {
-                        ForEach(TaskCategory.sampleCategories) { category in
-                            Text(category.title).tag(category)
+                        Text("未選択").tag(CategoryModel?.none)
+                        ForEach(categories) { category in
+                            Text(category.title).tag(Optional(category))
                         }
                     }
 
-                    ForEach(TaskTag.sampleTags) { tag in
+                    ForEach(tags) { tag in
                         Toggle(tag.title, isOn: bindingForTag(tag))
                     }
                 }
@@ -104,6 +108,11 @@ struct TaskDetailSheet: View {
                     }
                 }
             }
+            .onAppear {
+                if draft.category == nil {
+                    draft.category = categories.first
+                }
+            }
         }
     }
 
@@ -125,22 +134,22 @@ struct TaskDetailSheet: View {
         }
 
         validationMessage = nil
-        item.title = trimmedTitle
-        item.memo = draft.memo
-        item.status = draft.status
-        item.priority = draft.priority
-        item.dueDate = draft.dueDate
-        item.plannedStart = draft.plannedStart
-        item.plannedEnd = draft.plannedEnd
-        item.plannedHours = draft.plannedHours
-        item.actualHours = draft.actualHours
-        item.category = draft.category
-        item.tags = TaskTag.sampleTags.filter { draft.selectedTagIDs.contains($0.id) }
+        task.title = trimmedTitle
+        task.memo = draft.memo
+        task.status = draft.status
+        task.priority = draft.priority
+        task.dueDate = draft.dueDate
+        task.plannedStart = draft.plannedStart
+        task.plannedEnd = draft.plannedEnd
+        task.plannedHours = draft.plannedHours
+        task.actualHours = draft.actualHours
+        task.category = draft.category
+        task.tags = tags.filter { draft.selectedTagIDs.contains($0.id) }
         dismiss()
     }
 
     // タグの選択状態をToggleにバインドする
-    private func bindingForTag(_ tag: TaskTag) -> Binding<Bool> {
+    private func bindingForTag(_ tag: TagModel) -> Binding<Bool> {
         Binding(
             get: { draft.selectedTagIDs.contains(tag.id) },
             set: { isOn in
@@ -155,5 +164,6 @@ struct TaskDetailSheet: View {
 }
 
 #Preview {
-    TaskDetailSheet(item: .constant(TaskListItem.sampleItems[0]), onDelete: {})
+    TaskDetailSheet(task: TaskModel(title: "サンプル"), onDelete: {})
+        .modelContainer(for: [TaskModel.self, CategoryModel.self, TagModel.self], inMemory: true)
 }
