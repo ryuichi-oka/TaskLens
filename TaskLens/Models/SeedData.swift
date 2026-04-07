@@ -3,9 +3,17 @@ import SwiftData
 
 // 初回起動時のサンプルデータ投入
 struct SeedData {
+    private static let didInsertSeedDataKey = "tasklens.didInsertSeedData.v1"
+
     static func insertIfNeeded(context: ModelContext) {
-        let categoryFetch = FetchDescriptor<CategoryModel>()
-        if (try? context.fetchCount(categoryFetch)) ?? 0 > 0 {
+        let defaults = UserDefaults.standard
+        if defaults.bool(forKey: didInsertSeedDataKey) {
+            return
+        }
+
+        // 既存データがある環境にはサンプルを再投入しない
+        if hasExistingData(context: context) {
+            defaults.set(true, forKey: didInsertSeedDataKey)
             return
         }
 
@@ -64,6 +72,23 @@ struct SeedData {
         context.insert(task2)
         context.insert(task3)
 
-        try? context.save()
+        do {
+            try context.save()
+            defaults.set(true, forKey: didInsertSeedDataKey)
+        } catch {
+            // 保存失敗時は次回起動時に再試行できるようフラグを更新しない
+        }
+    }
+
+    private static func hasExistingData(context: ModelContext) -> Bool {
+        let taskFetch = FetchDescriptor<TaskModel>()
+        let categoryFetch = FetchDescriptor<CategoryModel>()
+        let tagFetch = FetchDescriptor<TagModel>()
+
+        let taskCount = (try? context.fetchCount(taskFetch)) ?? 0
+        let categoryCount = (try? context.fetchCount(categoryFetch)) ?? 0
+        let tagCount = (try? context.fetchCount(tagFetch)) ?? 0
+
+        return taskCount > 0 || categoryCount > 0 || tagCount > 0
     }
 }

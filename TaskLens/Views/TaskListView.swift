@@ -70,6 +70,18 @@ struct TaskListView: View {
         .sheet(isPresented: $isCreatePresented) {
             TaskCreateSheet()
         }
+        .onChange(of: categoryIDs) { newValue in
+            guard let selectedCategoryID else { return }
+            if !newValue.contains(selectedCategoryID) {
+                self.selectedCategoryID = nil
+            }
+        }
+        .onChange(of: tagIDs) { newValue in
+            guard let selectedTagID else { return }
+            if !newValue.contains(selectedTagID) {
+                self.selectedTagID = nil
+            }
+        }
     }
 
     // 選択中の条件を適用した一覧表示用の配列
@@ -92,6 +104,14 @@ struct TaskListView: View {
     // 空状態メッセージを一覧全体の件数とフィルタ有無で切り替える
     private var emptyStateMessage: String {
         tasks.isEmpty ? "右下の + から作成しましょう" : "フィルタ条件を変更してみましょう"
+    }
+
+    private var categoryIDs: [UUID] {
+        categories.map(\.id)
+    }
+
+    private var tagIDs: [UUID] {
+        tags.map(\.id)
     }
 
     // 状態/カテゴリ/タグのフィルタチップを並べる
